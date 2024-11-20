@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto IoT - Sonómetro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Centrar imágenes y controlar su tamaño */
+        .info-card img {
+            max-height: 250px;
+            width: auto;
+            margin: 0 auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* Espaciado entre tarjetas */
+        .info-card {
+            margin-bottom: 2rem;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const navbar = document.getElementById("navbarContent");
+
+            // Verificar sesión
+            fetch("php/verificarSesion.php")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.loggedIn) {
+                        // Si está logueado, mostrar opciones adicionales
+                        navbar.innerHTML = `
+                            <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Ver Perfiles</a></li>
+                            <li class="nav-item">
+                                <a class="btn btn-danger" href="php/logout.php">Cerrar Sesión</a>
+                            </li>
+                        `;
+                    } else {
+                        // Si no está logueado, mostrar opciones básicas
+                        navbar.innerHTML = `
+                            <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                            <li class="nav-item">
+                                <a class="btn btn-success me-2" href="registro.html">Registrarse</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary" href="login.html">Login</a>
+                            </li>
+                        `;
+                    }
+                })
+                .catch(error => console.error("Error al verificar sesión:", error));
+        });
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Sonómetro IoT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto" id="navbarContent">
+                    <!-- Contenido cargado dinámicamente -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main content -->
+    <div class="container mt-4">
+        <h1 class="text-center">Bienvenido al Proyecto IoT - Sonómetro</h1>
+        <p class="lead text-center">Explorando la importancia de la audición y los efectos de la contaminación auditiva.</p>
+        <div class="row mt-5 text-center">
+            <div class="col-md-4 info-card">
+                <h3>¿Qué es un Sonómetro?</h3>
+                <p>Un dispositivo diseñado para medir niveles de sonido en el ambiente, clave para monitorear contaminación auditiva.</p>
+                <img src="img/sonometro.jpg" alt="Sonómetro" class="img-fluid rounded">
+            </div>
+            <div class="col-md-4 info-card">
+                <h3>Importancia de la Audición</h3>
+                <p>La audición es esencial para la comunicación y calidad de vida. Protegerla es fundamental.</p>
+                <img src="img/audicion.jpg" alt="Importancia de la Audición" class="img-fluid rounded">
+            </div>
+            <div class="col-md-4 info-card">
+                <h3>¿Qué es la Contaminación Auditiva?</h3>
+                <p>La exposición a sonidos fuertes puede afectar la salud física y mental, siendo crucial medir y controlar los niveles sonoros.</p>
+                <img src="img/contaminacion_auditiva.jpg" alt="Contaminación Auditiva" class="img-fluid rounded">
+            </div>
+        </div>
+
+        <!-- Texto informativo -->
+        <div class="mt-5 p-4 bg-light rounded shadow-sm">
+            <h3 class="text-center mb-3">Contaminación Acústica en La Paz</h3>
+            <p class="info-text">
+                En la ciudad de La Paz, el incremento de la actividad urbana, el tráfico constante y las frecuentes manifestaciones han intensificado la contaminación acústica, convirtiéndola en una amenaza para la salud pública. 
+                Los altos niveles de ruido afectan especialmente a poblaciones vulnerables como adultos mayores, niños, bebés, personas con autismo y personas con hipersensibilidad auditiva, quienes son propensos a sufrir consecuencias serias como pérdida de audición, aumento del estrés, trastornos del sueño y riesgos cardiovasculares.
+                <br><br>
+                Ante este panorama, resulta crucial contar con herramientas que permitan monitorear, evaluar y gestionar los niveles de ruido en tiempo real, para mitigar sus efectos negativos y proteger a los ciudadanos, especialmente a los más vulnerables.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 p-4 text-center">
+        <p class="mb-0">&copy; 2024 Proyecto IoT - Sonómetro. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

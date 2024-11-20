@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Cargar los tipos dinámicamente
+            const selectTipo = document.getElementById("tipo_idTipo");
+            fetch("php/obtenerTipos.php")
+                .then(response => response.text())
+                .then(data => {
+                    selectTipo.innerHTML += data; // Agregar las opciones al select
+                })
+                .catch(error => console.error("Error al cargar los tipos:", error));
+
+            // Capturar el evento del formulario
+            const form = document.querySelector("form");
+            form.addEventListener("submit", function (e) {
+                e.preventDefault(); // Evitar el envío automático del formulario
+
+                // Mostrar SweetAlert de confirmación
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¿Deseas completar el registro?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, registrar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Enviar el formulario con fetch
+                        const formData = new FormData(form);
+                        fetch("php/registro.php", {
+                            method: "POST",
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // SweetAlert de éxito
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Registro exitoso',
+                                    text: 'El usuario ha sido registrado correctamente.',
+                                    confirmButtonText: 'Aceptar'
+                                }).then(() => {
+                                    window.location.href = "index.html"; // Redirigir al index
+                                });
+                            } else {
+                                // SweetAlert de error
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'Hubo un problema al registrar el usuario.',
+                                    confirmButtonText: 'Aceptar'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'No se pudo completar el registro.',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100 bg-light">
+    <div class="card p-4 shadow" style="width: 400px;">
+        <h3 class="text-center">Registro</h3>
+        <form>
+            <div class="mb-3">
+                <label for="nombreUsuario" class="form-label">Usuario:</label>
+                <input type="text" id="nombreUsuario" name="nombreUsuario" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="tipo_idTipo" class="form-label">Tipo de Usuario:</label>
+                <select id="tipo_idTipo" name="tipo_idTipo" class="form-select" required>
+                    <option value="">Selecciona un tipo</option>
+                    <!-- Las opciones se cargarán dinámicamente aquí -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Registrarse</button>
+        </form>
+    </div>
+</body>
+</html>
