@@ -8,7 +8,7 @@ if ($conn->connect_error) {
 $action = $_GET['action'];
 $filters = json_decode($_GET['filters'], true);
 
-// Construir filtros dinámicos
+// Construcción de filtros dinámicos
 $whereClauses = [];
 
 if (!empty($filters['profile'])) {
@@ -25,7 +25,7 @@ if (!empty($filters['date'])) {
 
 $whereSQL = count($whereClauses) > 0 ? "WHERE " . implode(" AND ", $whereClauses) : "";
 
-// Gráficos dinámicos según la acción
+// Procesar la acción solicitada
 if ($action === "getUserChart") {
     $query = "
         SELECT u.nombreUsuario AS label, COUNT(r.idRegistro) AS value
@@ -41,7 +41,7 @@ if ($action === "getUserChart") {
         INNER JOIN usuario u ON r.usuario_idUsuario = u.idUsuario
         INNER JOIN tipo t ON u.tipo_idTipo = t.idTipo
         WHERE r.excedeLimite = 1
-        $whereSQL
+        " . ($whereSQL ? " AND " . substr($whereSQL, 6) : "") . "
         GROUP BY t.idTipo
     ";
 } elseif ($action === "getProfileChart") {
@@ -57,6 +57,7 @@ if ($action === "getUserChart") {
     die(json_encode(["error" => "Acción no válida."]));
 }
 
+// Ejecutar consulta y devolver resultados
 $result = $conn->query($query);
 $data = ["labels" => [], "values" => []];
 while ($row = $result->fetch_assoc()) {

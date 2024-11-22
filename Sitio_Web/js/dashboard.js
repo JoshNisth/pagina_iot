@@ -28,62 +28,62 @@ function loadMetrics(filters) {
 }
 
 function loadCharts(filters) {
-    // Registros por Usuario
-    fetch(`php/getChartsData.php?action=getUserChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById("userChart").getContext("2d");
-            if (userChart) userChart.destroy();
-            userChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Registros por Usuario",
-                        data: data.values,
-                        backgroundColor: "#36A2EB"
-                    }]
-                }
-            });
-        });
+  // Registros por Usuario
+  fetch(`php/getChartsData.php?action=getUserChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
+      .then(response => response.json())
+      .then(data => {
+          const ctx = document.getElementById("userChart").getContext("2d");
+          if (userChart) userChart.destroy();
+          userChart = new Chart(ctx, {
+              type: "bar",
+              data: {
+                  labels: data.labels,
+                  datasets: [{
+                      label: "Registros por Usuario",
+                      data: data.values,
+                      backgroundColor: "#36A2EB"
+                  }]
+              }
+          });
+      });
 
-    // Excesos de Límite por Perfil
-    fetch(`php/getChartsData.php?action=getProfileExcessChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById("profileExcessChart").getContext("2d");
-            if (profileExcessChart) profileExcessChart.destroy();
-            profileExcessChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Excesos de Límite por Perfil",
-                        data: data.values,
-                        backgroundColor: "#FF6384"
-                    }]
-                }
-            });
-        });
+  // Excesos de Límite por Perfil
+  fetch(`php/getChartsData.php?action=getProfileExcessChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
+      .then(response => response.json())
+      .then(data => {
+          const ctx = document.getElementById("profileExcessChart").getContext("2d");
+          if (profileExcessChart) profileExcessChart.destroy();
+          profileExcessChart = new Chart(ctx, {
+              type: "bar",
+              data: {
+                  labels: data.labels,
+                  datasets: [{
+                      label: "Excesos de Límite por Perfil",
+                      data: data.values,
+                      backgroundColor: "#FF6384"
+                  }]
+              }
+          });
+      });
 
-    // Registros por Perfil
-    fetch(`php/getChartsData.php?action=getProfileChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
-        .then(response => response.json())
-        .then(data => {
-            const ctx = document.getElementById("profileChart").getContext("2d");
-            if (profileChart) profileChart.destroy();
-            profileChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Registros por Perfil",
-                        data: data.values,
-                        backgroundColor: "#4BC0C0"
-                    }]
-                }
-            });
-        });
+  // Registros por Perfil
+  fetch(`php/getChartsData.php?action=getProfileChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
+      .then(response => response.json())
+      .then(data => {
+          const ctx = document.getElementById("profileChart").getContext("2d");
+          if (profileChart) profileChart.destroy();
+          profileChart = new Chart(ctx, {
+              type: "bar",
+              data: {
+                  labels: data.labels,
+                  datasets: [{
+                      label: "Registros por Perfil",
+                      data: data.values,
+                      backgroundColor: "#4BC0C0"
+                  }]
+              }
+          });
+      });
 }
 
 function loadRealTimeChart() {
