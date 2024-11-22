@@ -18,8 +18,8 @@ function loadFilters() {
         });
 }
 
-function loadMetrics() {
-    fetch("php/getMetrics.php")
+function loadMetrics(filters) {
+    fetch(`php/getMetrics.php?filters=${encodeURIComponent(JSON.stringify(filters))}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById("mostActiveUser").querySelector("p").textContent = `${data.mostActiveUser.name} (${data.mostActiveUser.percentage}%)`;
@@ -27,9 +27,9 @@ function loadMetrics() {
         });
 }
 
-function loadCharts() {
+function loadCharts(filters) {
     // Registros por Usuario
-    fetch("php/getChartsData.php?action=getUserChart")
+    fetch(`php/getChartsData.php?action=getUserChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById("userChart").getContext("2d");
@@ -48,7 +48,7 @@ function loadCharts() {
         });
 
     // Excesos de Límite por Perfil
-    fetch("php/getChartsData.php?action=getProfileExcessChart")
+    fetch(`php/getChartsData.php?action=getProfileExcessChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById("profileExcessChart").getContext("2d");
@@ -67,7 +67,7 @@ function loadCharts() {
         });
 
     // Registros por Perfil
-    fetch("php/getChartsData.php?action=getProfileChart")
+    fetch(`php/getChartsData.php?action=getProfileChart&filters=${encodeURIComponent(JSON.stringify(filters))}`)
         .then(response => response.json())
         .then(data => {
             const ctx = document.getElementById("profileChart").getContext("2d");
@@ -84,10 +84,12 @@ function loadCharts() {
                 }
             });
         });
+}
 
-    // Niveles en Tiempo Real
+function loadRealTimeChart() {
+    const ctx = document.getElementById("realTimeChart").getContext("2d");
+
     if (!realTimeChart) {
-        const ctx = document.getElementById("realTimeChart").getContext("2d");
         realTimeChart = new Chart(ctx, {
             type: "line",
             data: {
@@ -102,6 +104,7 @@ function loadCharts() {
         });
     }
 
+    // Cargar datos iniciales de tiempo real
     fetch("php/getRealTimeData.php")
         .then(response => response.json())
         .then(data => {
@@ -109,14 +112,8 @@ function loadCharts() {
             realTimeChart.data.datasets[0].data = data.values;
             realTimeChart.update();
         });
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadFilters();
-    loadMetrics();
-    loadCharts();
-
-    // Actualización periódica de la gráfica de tiempo real
+    // Actualizar cada 5 segundos
     setInterval(() => {
         fetch("php/getRealTimeData.php")
             .then(response => response.json())
@@ -126,9 +123,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 realTimeChart.update();
             });
     }, 5000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadFilters();
+
+    const initialFilters = {
+        profile: filterProfile.value,
+        user: filterUser.value,
+        date: filterDate.value,
+    };
+
+    loadMetrics(initialFilters);
+    loadCharts(initialFilters);
+    loadRealTimeChart();
 
     applyFiltersButton.addEventListener("click", () => {
-        loadMetrics();
-        loadCharts();
+        const filters = {
+            profile: filterProfile.value,
+            user: filterUser.value,
+            date: filterDate.value,
+        };
+
+        loadMetrics(filters);
+        loadCharts(filters);
     });
 });
